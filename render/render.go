@@ -26,7 +26,6 @@ var (
 	_ Render     = Reader{}
 	_ Render     = AsciiJSON{}
 	_ Render     = ProtoBuf{}
-	_ Render     = TOML{}
 )
 
 func writeContentType(w http.ResponseWriter, value []string) {

@@ -15,7 +15,6 @@ const (
 	MIMEMultipartPOSTForm = "multipart/form-data"
 	MIMEPROTOBUF          = "application/x-protobuf"
 	MIMEYAML              = "application/x-yaml"
-	MIMETOML              = "application/toml"
 )
 
 // Binding describes the interface which needs to be implemented for binding the
@@ -76,7 +75,6 @@ var (
 	YAML          = yamlBinding{}
 	Uri           = uriBinding{}
 	Header        = headerBinding{}
-	TOML          = tomlBinding{}
 )
 
 // Default returns the appropriate Binding instance based on the HTTP method
@@ -95,8 +93,6 @@ func Default(method, contentType string) Binding {
 		return ProtoBuf
 	case MIMEYAML:
 		return YAML
-	case MIMETOML:
-		return TOML
 	case MIMEMultipartPOSTForm:
 		return FormMultipart
 	default: // case MIMEPOSTForm:
