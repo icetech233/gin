@@ -7,7 +7,7 @@ require (
 	github.com/go-playground/validator/v10 v10.14.0
 	github.com/mattn/go-isatty v0.0.20
 	golang.org/x/net v0.24.0
-	google.golang.org/protobuf v1.33.0
+	google.golang.org/protobuf v1.34.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
