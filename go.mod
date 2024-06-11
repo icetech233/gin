@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/gin-contrib/sse v0.1.0
-	github.com/go-playground/validator/v10 v10.20.0
+	github.com/go-playground/validator/v10 v10.21.0
 	github.com/mattn/go-isatty v0.0.20
 	golang.org/x/net v0.25.0
 	google.golang.org/protobuf v1.34.1
