@@ -43,6 +43,9 @@ var regRemoveRepeatedChar = regexp.MustCompile("/{2,}")
 // HandlerFunc defines the handler used by gin middleware as return value.
 type HandlerFunc func(*Context)
 
+// OptionFunc defines the function to change the default configuration
+type OptionFunc func(*Engine)
+
 // HandlersChain defines a HandlerFunc slice.
 type HandlersChain []HandlerFunc
 
@@ -73,6 +76,8 @@ const (
 	// PlatformCloudflare when using Cloudflare's CDN. Trust CF-Connecting-IP for determining
 	// the client's IP
 	PlatformCloudflare = "CF-Connecting-IP"
+	// PlatformFlyIO when running on Fly.io. Trust Fly-Client-IP for determining the client's IP
+	PlatformFlyIO = "Fly-Client-IP"
 )
 
 // Engine is the framework's instance, it contains the muxer, middleware and configuration settings.
@@ -176,7 +181,7 @@ var _ IRouter = (*Engine)(nil)
 // - ForwardedByClientIP:    true
 // - UseRawPath:             false
 // - UnescapePathValues:     true
-func New() *Engine {
+func New(opts ...OptionFunc) *Engine {
 	debugPrintWARNINGNew()
 	engine := &Engine{
 		RouterGroup: RouterGroup{
@@ -205,15 +210,15 @@ func New() *Engine {
 	engine.pool.New = func() any {
 		return engine.allocateContext(engine.maxParams)
 	}
-	return engine
+	return engine.With(opts...)
 }
 
 // Default returns an Engine instance with the Logger and Recovery middleware already attached.
-func Default() *Engine {
+func Default(opts ...OptionFunc) *Engine {
 	debugPrintWARNINGDefault()
 	engine := New()
 	engine.Use(Logger(), Recovery())
-	return engine
+	return engine.With(opts...)
 }
 
 func (engine *Engine) Handler() http.Handler {
@@ -304,6 +309,15 @@ func (engine *Engine) Use(middleware ...HandlerFunc) IRoutes {
 	engine.RouterGroup.Use(middleware...)
 	engine.rebuild404Handlers()
 	engine.rebuild405Handlers()
+	return engine
+}
+
+// With returns a new Engine instance with the provided options.
+func (engine *Engine) With(opts ...OptionFunc) *Engine {
+	for _, opt := range opts {
+		opt(engine)
+	}
+
 	return engine
 }
 
@@ -630,17 +644,25 @@ func (engine *Engine) handleHTTPRequest(c *Context) {
 	}
 
 	if engine.HandleMethodNotAllowed {
+		// According to RFC 7231 section 6.5.5, MUST generate an Allow header field in response
+		// containing a list of the target resource's currently supported methods.
+		allowed := make([]string, 0, len(t)-1)
 		for _, tree := range engine.trees {
 			if tree.method == httpMethod {
 				continue
 			}
 			if value := tree.root.getValue(rPath, nil, c.skippedNodes, unescape); value.handlers != nil {
-				c.handlers = engine.allNoMethod
-				serveError(c, http.StatusMethodNotAllowed, default405Body)
-				return
+				allowed = append(allowed, tree.method)
 			}
 		}
+		if len(allowed) > 0 {
+			c.handlers = engine.allNoMethod
+			c.writermem.Header().Set("Allow", strings.Join(allowed, ", "))
+			serveError(c, http.StatusMethodNotAllowed, default405Body)
+			return
+		}
 	}
+
 	c.handlers = engine.allNoRoute
 	serveError(c, http.StatusNotFound, default404Body)
 }

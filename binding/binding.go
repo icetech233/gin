@@ -15,6 +15,7 @@ const (
 	MIMEMultipartPOSTForm = "multipart/form-data"
 	MIMEPROTOBUF          = "application/x-protobuf"
 	MIMEYAML              = "application/x-yaml"
+	MIMEYAML2             = "application/yaml"
 )
 
 // Binding describes the interface which needs to be implemented for binding the
@@ -65,16 +66,16 @@ var Validator StructValidator = &defaultValidator{}
 // These implement the Binding interface and can be used to bind the data
 // present in the request to struct instances.
 var (
-	JSON          = jsonBinding{}
-	XML           = xmlBinding{}
-	Form          = formBinding{}
-	Query         = queryBinding{}
-	FormPost      = formPostBinding{}
-	FormMultipart = formMultipartBinding{}
-	ProtoBuf      = protobufBinding{}
-	YAML          = yamlBinding{}
-	Uri           = uriBinding{}
-	Header        = headerBinding{}
+	JSON          BindingBody = jsonBinding{}
+	XML           BindingBody = xmlBinding{}
+	Form          Binding     = formBinding{}
+	Query         Binding     = queryBinding{}
+	FormPost      Binding     = formPostBinding{}
+	FormMultipart Binding     = formMultipartBinding{}
+	ProtoBuf      BindingBody = protobufBinding{}
+	YAML          BindingBody = yamlBinding{}
+	Uri           BindingUri  = uriBinding{}
+	Header        Binding     = headerBinding{}
 )
 
 // Default returns the appropriate Binding instance based on the HTTP method
@@ -91,7 +92,7 @@ func Default(method, contentType string) Binding {
 		return XML
 	case MIMEPROTOBUF:
 		return ProtoBuf
-	case MIMEYAML:
+	case MIMEYAML, MIMEYAML2:
 		return YAML
 	case MIMEMultipartPOSTForm:
 		return FormMultipart
