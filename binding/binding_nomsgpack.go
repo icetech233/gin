@@ -1,5 +1,3 @@
-// Copyright 2020 Gin Core Team. All rights reserved.
-
 //go:build nomsgpack
 
 package binding
@@ -19,6 +17,7 @@ const (
 	MIMEYAML              = "application/x-yaml"
 	MIMEYAML2             = "application/yaml"
 	MIMETOML              = "application/toml"
+	MIMEBSON              = "application/bson"
 )
 
 // Binding describes the interface which needs to be implemented for binding the
@@ -78,6 +77,7 @@ var (
 	YAML          = yamlBinding{}
 	Uri           = uriBinding{}
 	Header        = headerBinding{}
+	Plain         = plainBinding{}
 )
 
 // Default returns the appropriate Binding instance based on the HTTP method

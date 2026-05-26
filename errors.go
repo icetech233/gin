@@ -1,3 +1,7 @@
+// Copyright 2014 Manu Martinez-Almeida. All rights reserved.
+// Use of this source code is governed by a MIT style
+// license that can be found in the LICENSE file.
+
 package gin
 
 import (
@@ -5,7 +9,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/icetech233/gin/internal/json"
+	"github.com/icetech233/gin/codec/json"
 )
 
 // ErrorType is an unsigned 64-bit error code as defined in the gin spec.
@@ -22,8 +26,6 @@ const (
 	ErrorTypePublic ErrorType = 1 << 1
 	// ErrorTypeAny indicates any other error.
 	ErrorTypeAny ErrorType = 1<<64 - 1
-	// ErrorTypeNu indicates any other error.
-	ErrorTypeNu = 2
 )
 
 // Error represents a error's specification.
@@ -73,7 +75,7 @@ func (msg *Error) JSON() any {
 
 // MarshalJSON implements the json.Marshaller interface.
 func (msg *Error) MarshalJSON() ([]byte, error) {
-	return json.Marshal(msg.JSON())
+	return json.API.Marshal(msg.JSON())
 }
 
 // Error implements the error interface.
@@ -87,7 +89,7 @@ func (msg *Error) IsType(flags ErrorType) bool {
 }
 
 // Unwrap returns the wrapped error, to allow interoperability with errors.Is(), errors.As() and errors.Unwrap()
-func (msg *Error) Unwrap() error {
+func (msg Error) Unwrap() error {
 	return msg.Err
 }
 
@@ -153,7 +155,7 @@ func (a errorMsgs) JSON() any {
 
 // MarshalJSON implements the json.Marshaller interface.
 func (a errorMsgs) MarshalJSON() ([]byte, error) {
-	return json.Marshal(a.JSON())
+	return json.API.Marshal(a.JSON())
 }
 
 func (a errorMsgs) String() string {

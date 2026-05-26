@@ -1,5 +1,3 @@
-// Copyright 2019 Gin Core Team. All rights reserved.
-
 package binding
 
 import (

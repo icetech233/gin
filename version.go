@@ -1,3 +1,3 @@
 package gin
 
-const Version = "v1.10.0"
+const Version = "v1.12.0"
