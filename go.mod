@@ -1,9 +1,9 @@
 module github.com/icetech233/gin
 
-go 1.20
+go 1.23
 
 require (
-	github.com/gin-contrib/sse v0.1.0
+	github.com/gin-contrib/sse v1.1.1
 	github.com/go-playground/validator/v10 v10.20.0
 	github.com/mattn/go-isatty v0.0.20
 	golang.org/x/net v0.25.0
