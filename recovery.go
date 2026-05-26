@@ -23,10 +23,6 @@ const (
 	stackSkip = 3
 )
 
-var (
-	dunno_old = []byte("???")
-)
-
 // RecoveryFunc defines the function passable to CustomRecovery.
 type RecoveryFunc func(c *Context, err any)
 
@@ -140,7 +136,7 @@ func stack(skip int) []byte {
 func source(lines [][]byte, n int) []byte {
 	n-- // in stack trace, lines are 1-indexed but our array is 0-indexed
 	if n < 0 || n >= len(lines) {
-		return dunno_old
+		return bytesconv.StringToBytes(dunno)
 	}
 	return bytes.TrimSpace(lines[n])
 }
