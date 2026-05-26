@@ -1,13 +1,13 @@
 module github.com/icetech233/gin
 
-go 1.20
+go 1.23
 
 require (
 	github.com/gin-contrib/sse v0.1.0
 	github.com/go-playground/validator/v10 v10.20.0
 	github.com/mattn/go-isatty v0.0.20
 	golang.org/x/net v0.25.0
-	google.golang.org/protobuf v1.34.1
+	google.golang.org/protobuf v1.36.11
 	gopkg.in/yaml.v3 v3.0.1
 )
 
