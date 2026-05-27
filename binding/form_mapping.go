@@ -4,7 +4,6 @@ import (
 	"encoding"
 	"errors"
 	"fmt"
-	"maps"
 	"mime/multipart"
 	"reflect"
 	"strconv"
@@ -529,8 +528,9 @@ func setFormMap(ptr any, form map[string][]string) error {
 		if !ok {
 			return ErrConvertMapStringSlice
 		}
-		maps.Copy(ptrMap, form)
-
+		for k, v := range form {
+			ptrMap[k] = v
+		}
 		return nil
 	}
 

@@ -8,9 +8,17 @@ import (
 	"github.com/icetech233/gin"
 )
 
-var engine = sync.OnceValue(func() *gin.Engine {
-	return gin.Default()
-})
+var (
+	engineOnce     sync.Once
+	engineInstance *gin.Engine
+)
+
+func engine() *gin.Engine {
+	engineOnce.Do(func() {
+		engineInstance = gin.Default()
+	})
+	return engineInstance
+}
 
 // LoadHTMLGlob is a wrapper for Engine.LoadHTMLGlob.
 func LoadHTMLGlob(pattern string) {
